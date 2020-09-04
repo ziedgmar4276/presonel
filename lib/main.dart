@@ -15,13 +15,14 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.purple,
           accentColor: Colors.amber,
           fontFamily: 'Quicksand',
+          errorColor: Colors.red,
           textTheme: ThemeData.light().textTheme.copyWith(
-                // ignore: deprecated_member_use
-                title: TextStyle(
-                    fontFamily: 'OpenSans',
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18),
-              ),
+              // ignore: deprecated_member_use
+              title: TextStyle(
+                  fontFamily: 'OpenSans',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18),
+              button: TextStyle(color: Colors.white)),
           appBarTheme: AppBarTheme(
             textTheme: ThemeData.light().textTheme.copyWith(
                   // ignore: deprecated_member_use
@@ -70,16 +71,23 @@ class _MyHomePageState extends State<MyHomePage> {
     ).toList();
   }
 
-  void _addNewTransaction(String txTitle, double txAmount) {
+  void _addNewTransaction(
+      String txTitle, double txAmount, DateTime chosenDate) {
     final newTx = Transaction(
         title: txTitle,
         amount: txAmount,
-        date: DateTime.now(),
+        date:chosenDate,
         id: DateTime.now().toString());
 
     setState(() {
       _userTransaction.add(newTx);
     });
+  }
+
+  void _deleteTransaction(String id) {
+    setState(() {
+        _userTransaction.removeWhere((tx) => tx.id == id);
+      });
   }
 
   void _startAddNewTransaction(BuildContext ctx) {
@@ -115,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Chart(_recentTransactions),
-            TransactionList(_userTransaction),
+            TransactionList(_userTransaction, _deleteTransaction),
           ],
         ),
       ),
